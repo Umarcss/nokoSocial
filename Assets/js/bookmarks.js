@@ -138,6 +138,23 @@ const statsData = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded');
+    
+    // Initialize with sample data if no bookmarks exist
+    if (!localStorage.getItem('bookmarks')) {
+        console.log('Initializing with sample bookmarks');
+        localStorage.setItem('bookmarks', JSON.stringify(sampleBookmarks));
+    }
+    
+    // Load bookmarks and update UI
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    console.log('Loaded bookmarks:', bookmarks);
+    
+    if (bookmarks.length === 0) {
+        console.log('No bookmarks found, initializing with sample data');
+        localStorage.setItem('bookmarks', JSON.stringify(sampleBookmarks));
+    }
+    
     loadBookmarks();
     loadCollections();
     setupEventListeners();
@@ -178,11 +195,25 @@ function setupEventListeners() {
             collectionModal.classList.remove('show');
         }
     });
+
+    // Add bookmark functionality to posts
+    document.addEventListener('click', (e) => {
+        const bookmarkBtn = e.target.closest('.bookmark');
+        if (bookmarkBtn) {
+            const feed = bookmarkBtn.closest('.feed');
+            if (feed) {
+                toggleBookmark(feed);
+            }
+        }
+    });
 }
 
 // Load Bookmarks
 function loadBookmarks() {
+    console.log('Loading bookmarks...');
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    console.log('Bookmarks from storage:', bookmarks);
+    
     let filteredBookmarks = filterBookmarks(bookmarks);
     filteredBookmarks = sortBookmarks(filteredBookmarks);
     
@@ -204,17 +235,13 @@ function filterBookmarks(bookmarks) {
 function sortBookmarks(bookmarks) {
     switch (currentSort) {
         case 'newest':
-            return bookmarks.sort((a, b) => b.id - a.id);
+            return bookmarks.sort((a, b) => new Date(b.date) - new Date(a.date));
         case 'oldest':
-            return bookmarks.sort((a, b) => a.id - b.id);
+            return bookmarks.sort((a, b) => new Date(a.date) - new Date(b.date));
         case 'name':
             return bookmarks.sort((a, b) => a.user.name.localeCompare(b.user.name));
         case 'popular':
-            return bookmarks.sort((a, b) => {
-                const likesA = parseInt(a.likes.match(/\d+/)[0]);
-                const likesB = parseInt(b.likes.match(/\d+/)[0]);
-                return likesB - likesA;
-            });
+            return bookmarks.sort((a, b) => b.likes - a.likes);
         default:
             return bookmarks;
     }
@@ -222,9 +249,16 @@ function sortBookmarks(bookmarks) {
 
 // Display Bookmarks
 function displayBookmarks(bookmarks) {
+    console.log('Displaying bookmarks:', bookmarks);
+    if (!bookmarksList) {
+        console.error('Bookmarks list element not found');
+        return;
+    }
+    
     bookmarksList.innerHTML = '';
     
     if (bookmarks.length === 0) {
+        console.log('No bookmarks to display, showing empty state');
         showEmptyState();
         return;
     }
@@ -237,8 +271,14 @@ function displayBookmarks(bookmarks) {
 
 // Create Bookmark Element
 function createBookmarkElement(bookmark) {
+    console.log('Creating bookmark element:', bookmark);
     const div = document.createElement('div');
     div.className = 'bookmark-item';
+    div.dataset.id = bookmark.id;
+    
+    const date = new Date(bookmark.date);
+    const formattedDate = formatDate(date);
+    
     div.innerHTML = `
         <div class="bookmark-header">
             <div class="user-info">
@@ -251,16 +291,20 @@ function createBookmarkElement(bookmark) {
                 </div>
             </div>
             <div class="bookmark-actions">
-                <button class="btn-icon remove-bookmark" data-id="${bookmark.id}">
+                <button class="btn-icon share-bookmark" data-id="${bookmark.id}" title="Share">
+                    <i class="uil uil-share-alt"></i>
+                </button>
+                <button class="btn-icon remove-bookmark" data-id="${bookmark.id}" title="Remove">
                     <i class="uil uil-trash-alt"></i>
                 </button>
             </div>
         </div>
         <div class="bookmark-content">
             <p>${bookmark.content}</p>
+            <small class="text-muted">${formattedDate}</small>
         </div>
         <div class="bookmark-media">
-            <img src="${bookmark.image}" alt="Bookmark content">
+            <img src="${bookmark.image}" alt="Bookmark content" loading="lazy">
         </div>
         <div class="bookmark-footer">
             <div class="interaction-buttons">
@@ -281,29 +325,81 @@ function createBookmarkElement(bookmark) {
     // Add event listeners
     div.querySelector('.remove-bookmark').addEventListener('click', () => removeBookmark(bookmark.id));
     div.querySelector('.add-to-collection').addEventListener('change', (e) => addToCollection(bookmark.id, e.target.value));
+    div.querySelector('.share-bookmark').addEventListener('click', () => shareBookmark(bookmark));
 
     return div;
 }
 
-// Show Empty State
-function showEmptyState() {
-    bookmarksList.innerHTML = `
-        <div class="empty-state">
-            <i class="uil uil-bookmark"></i>
-            <h3>No Bookmarks Yet</h3>
-            <p>Start saving posts you love to your bookmarks!</p>
-        </div>
-    `;
+// Format Date
+function formatDate(date) {
+    const now = new Date();
+    const diff = now - date;
+    
+    // Less than 24 hours
+    if (diff < 24 * 60 * 60 * 1000) {
+        const hours = Math.floor(diff / (60 * 60 * 1000));
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    }
+    
+    // Less than 7 days
+    if (diff < 7 * 24 * 60 * 60 * 1000) {
+        const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+        return `${days} day${days !== 1 ? 's' : ''} ago`;
+    }
+    
+    // Otherwise show full date
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+// Toggle Bookmark
+function toggleBookmark(feed) {
+    const postId = feed.dataset.postId || Date.now();
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const isBookmarked = bookmarks.some(b => b.id === postId);
+    
+    if (isBookmarked) {
+        removeBookmark(postId);
+    } else {
+        const postData = {
+            id: postId,
+            user: {
+                name: feed.querySelector('.logo h3').textContent,
+                image: feed.querySelector('.profile-photo img').src,
+                location: feed.querySelector('.logo small').textContent
+            },
+            content: feed.querySelector('.caption p').textContent,
+            image: feed.querySelector('.photo img').src,
+            likes: parseInt(feed.querySelector('.liked-by p').textContent.match(/\d+/)[0]),
+            comments: parseInt(feed.querySelector('.comments').textContent.match(/\d+/)[0]),
+            date: new Date().toISOString()
+        };
+        
+        addBookmark(postData);
+    }
+}
+
+// Add Bookmark
+function addBookmark(bookmark) {
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    bookmarks.push(bookmark);
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    loadBookmarks();
+    showToast('Post bookmarked successfully');
 }
 
 // Remove Bookmark
 function removeBookmark(id) {
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-    const updatedBookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
-    localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
-    
-    showToast('Bookmark removed successfully');
-    loadBookmarks();
+    if (confirm('Are you sure you want to remove this bookmark?')) {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        const updatedBookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
+        localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
+        showToast('Bookmark removed successfully');
+        loadBookmarks();
+    }
 }
 
 // Add to Collection
@@ -321,6 +417,50 @@ function addToCollection(bookmarkId, collectionId) {
             showToast('Added to collection successfully');
         }
     }
+}
+
+// Show Empty State
+function showEmptyState() {
+    bookmarksList.innerHTML = `
+        <div class="empty-state">
+            <i class="uil uil-bookmark"></i>
+            <h3>No Bookmarks Yet</h3>
+            <p>Start saving posts you love to your bookmarks!</p>
+        </div>
+    `;
+}
+
+// Update Bookmarks View
+function updateBookmarksView() {
+    bookmarksList.className = `bookmarks-list ${currentView}-view`;
+}
+
+// Helper Functions
+function getBookmarkType(bookmark) {
+    const imageUrl = bookmark.image.toLowerCase();
+    if (imageUrl.includes('video')) return 'videos';
+    if (imageUrl.includes('article')) return 'articles';
+    if (imageUrl.match(/\.(jpg|jpeg|png|gif)$/)) return 'images';
+    return 'posts';
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
 }
 
 // Load Collections
@@ -599,35 +739,94 @@ function updateStatsUI() {
     }
 }
 
-// Helper Functions
-function getBookmarkType(bookmark) {
-    const imageUrl = bookmark.image.toLowerCase();
-    if (imageUrl.includes('video')) return 'videos';
-    if (imageUrl.includes('article')) return 'articles';
-    if (imageUrl.match(/\.(jpg|jpeg|png|gif)$/)) return 'images';
-    return 'posts';
+// Share Bookmark
+function shareBookmark(bookmark) {
+    // Create share data
+    const shareData = {
+        title: `${bookmark.user.name}'s Post`,
+        text: bookmark.content,
+        url: window.location.href
+    };
+
+    // Check if Web Share API is available
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => {
+                showToast('Shared successfully!');
+            })
+            .catch((error) => {
+                console.error('Error sharing:', error);
+                showShareModal(bookmark);
+            });
+    } else {
+        // Fallback to custom share modal
+        showShareModal(bookmark);
+    }
 }
 
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 3000);
+// Show Share Modal
+function showShareModal(bookmark) {
+    const modalBody = collectionModal.querySelector('.modal-body');
+    modalBody.innerHTML = `
+        <div class="share-options">
+            <h3>Share this post</h3>
+            <div class="share-buttons">
+                <button class="share-btn facebook" onclick="shareToFacebook('${bookmark.content}')">
+                    <i class="uil uil-facebook"></i>
+                    Facebook
+                </button>
+                <button class="share-btn twitter" onclick="shareToTwitter('${bookmark.content}')">
+                    <i class="uil uil-twitter"></i>
+                    Twitter
+                </button>
+                <button class="share-btn linkedin" onclick="shareToLinkedIn('${bookmark.content}')">
+                    <i class="uil uil-linkedin"></i>
+                    LinkedIn
+                </button>
+                <button class="share-btn copy-link" onclick="copyToClipboard('${window.location.href}')">
+                    <i class="uil uil-link"></i>
+                    Copy Link
+                </button>
+            </div>
+            <div class="share-preview">
+                <img src="${bookmark.image}" alt="Share preview">
+                <div class="preview-content">
+                    <h4>${bookmark.user.name}</h4>
+                    <p>${bookmark.content}</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    collectionModal.classList.add('show');
 }
 
-// Update Bookmarks View
-function updateBookmarksView() {
-    bookmarksList.className = `bookmarks-list ${currentView}-view`;
+// Social Media Share Functions
+function shareToFacebook(content) {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+    showToast('Opening Facebook share...');
+}
+
+function shareToTwitter(content) {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(content)}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+    showToast('Opening Twitter share...');
+}
+
+function shareToLinkedIn(content) {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+    showToast('Opening LinkedIn share...');
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            showToast('Link copied to clipboard!');
+        })
+        .catch((error) => {
+            console.error('Error copying to clipboard:', error);
+            showToast('Failed to copy link');
+        });
 } 

@@ -39,7 +39,7 @@ const notificationsPopup = document.querySelector('.notifications-popup');
 if (notificationsPopup) {
     const seeAllButton = document.createElement('a');
     seeAllButton.href = 'notifications.html';
-    seeAllButton.className = 'btn btn-primary see-all-btn';
+    seeAllButton.className = 'btn see-all-btn';
     seeAllButton.innerHTML = '<i class="uil uil-arrow-right"></i> See All Notifications';
     notificationsPopup.appendChild(seeAllButton);
 }
@@ -125,6 +125,7 @@ notificationStyles.textContent = `
         padding: 0.8rem;
         font-weight: 500;
         transition: all 300ms ease;
+        color: var(--color-primary);
     }
 
     .notifications-popup .see-all-btn:hover {

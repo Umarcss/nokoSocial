@@ -243,7 +243,7 @@ main .container{
     z-index: 9999;
     display: none;
     transition: all 300ms ease;
-    max-height: calc(100vh - 7rem);
+    max-height: 80vh;
     overflow-y: auto;
 }
 
@@ -318,7 +318,7 @@ main .container{
     background: var(--color-dark);
 }
 
-.left .notifications-popup .see-all-btn {
+.left .notifications-popup .see-all {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -327,18 +327,20 @@ main .container{
     margin-top: 1rem;
     padding: 0.8rem;
     font-weight: 500;
+    color: var(--color-primary);
+    cursor: pointer;
     transition: all 300ms ease;
 }
 
-.left .notifications-popup .see-all-btn:hover {
-    transform: translateX(5px);
+.left .notifications-popup .see-all:hover {
+    color: var(--color-dark);
 }
 
-.left .notifications-popup .see-all-btn i {
+.left .notifications-popup .see-all i {
     transition: all 300ms ease;
 }
 
-.left .notifications-popup .see-all-btn:hover i {
+.left .notifications-popup .see-all:hover i {
     transform: translateX(3px);
 }
 
@@ -454,10 +456,23 @@ main .container{
     gap: 1rem;
 }
 
-.middle .feed .photo{
+.middle .feed .photo {
     border-radius: var(--card-border-radius);
     overflow: hidden;
     margin: 0.7rem 0;
+    width: 100%;
+    max-height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--color-light);
+}
+
+.middle .feed .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-height: 500px;
 }
 
 .middle .feed .action-buttons{
@@ -852,6 +867,558 @@ MEDIA QUERIES FOR SMALL TABLETS AND MOBILE PHONE
 
 .customize-theme .close-btn:hover {
     color: var(--color-danger);
+}
+
+/* Create Post Styles */
+.create-post {
+    background: var(--color-white);
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    margin-bottom: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+.create-post .profile-photo {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.create-post .profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.create-post form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.create-post input[type="text"] {
+    flex: 1;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+    padding: 0.7rem;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.create-post input[type="submit"] {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 300ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.create-post input[type="submit"]:hover {
+    background: var(--color-primary-dark);
+}
+
+.create-post input[type="submit"]:active {
+    background: var(--color-primary);
+    transform: scale(0.98);
+}
+
+/* Feed Styles */
+.feed {
+    background: var(--color-white);
+    border-radius: var(--card-border-radius);
+    padding: var(--card-padding);
+    margin-bottom: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+.feed .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.feed .user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.feed .user .profile-photo {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.feed .user .profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.feed .user .logo h3 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.feed .user .logo small {
+    color: var(--color-gray);
+    font-size: 0.8rem;
+}
+
+.feed .caption {
+    margin-bottom: 1rem;
+}
+
+.feed .caption p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.feed .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.feed .interaction-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.feed .interaction-buttons span {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--color-gray);
+    transition: all 300ms ease;
+}
+
+.feed .interaction-buttons span:hover {
+    color: var(--color-primary);
+}
+
+.feed .interaction-buttons span.active {
+    color: var(--color-danger);
+}
+
+.feed .interaction-buttons span i {
+    transition: all 300ms ease;
+}
+
+.feed .interaction-buttons span.active i {
+    color: var(--color-danger);
+    font-variation-settings: 'FILL' 1;
+}
+
+.feed .bookmark span {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--color-gray);
+    transition: all 300ms ease;
+}
+
+.feed .bookmark span:hover {
+    color: var(--color-primary);
+}
+
+.feed .bookmark span i {
+    transition: all 300ms ease;
+}
+
+.feed .bookmark span.active i {
+    color: var(--color-primary);
+    font-variation-settings: 'FILL' 1;
+}
+
+.feed .liked-by {
+    margin-bottom: 0.5rem;
+}
+
+.feed .liked-by p {
+    font-size: 0.9rem;
+    color: var(--color-gray);
+    margin: 0;
+}
+
+.feed .comments {
+    font-size: 0.9rem;
+}
+
+.feed .comments .comment-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.feed .comments .comment-input input {
+    flex: 1;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.feed .comments .comment-input button {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 300ms ease;
+}
+
+.feed .comments .comment-input button:hover {
+    background: var(--color-primary-dark);
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    background: var(--color-dark);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: all 300ms ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Comment Styles */
+.comment {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    background: var(--color-light);
+}
+
+.comment-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.comment-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-username {
+    font-weight: 500;
+    color: var(--color-dark);
+}
+
+.comment-content p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-gray);
+}
+
+.comment-time {
+    font-size: 0.8rem;
+}
+
+.comment-like, .comment-reply {
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+
+.comment-like:hover, .comment-reply:hover {
+    color: var(--color-primary);
+}
+
+.comment-like.active i {
+    color: var(--color-danger);
+    font-variation-settings: 'FILL' 1;
+}
+
+.comments-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Reply Styles */
+.reply {
+    margin-left: 2.5rem;
+    border-left: 2px solid var(--color-primary);
+    padding-left: 1rem;
+}
+
+.replies-container {
+    margin-top: 0.5rem;
+}
+
+.reply-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+}
+
+.reply-input input {
+    flex: 1;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.reply-input button {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 300ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.reply-input button:hover {
+    background: var(--color-primary-dark);
+}
+
+.reply-input button:active {
+    background: var(--color-primary);
+    transform: scale(0.98);
+}
+
+.comment-input {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+}
+
+.comment-input input {
+    flex: 1;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.comment-input input:focus {
+    background: var(--color-white);
+    box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.comment-input button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    background: var(--color-primary);
+    color: var(--color-white);
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+
+.comment-input button:hover {
+    background: var(--color-primary-variant);
+}
+
+/* Create Post Modal */
+.create-post-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 300ms ease;
+}
+
+.create-post-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.create-post-modal .modal-content {
+    background: var(--color-white);
+    width: 90%;
+    max-width: 600px;
+    border-radius: var(--card-border-radius);
+    padding: 1.5rem;
+    transform: translateY(-20px);
+    transition: all 300ms ease;
+}
+
+.create-post-modal.show .modal-content {
+    transform: translateY(0);
+}
+
+.create-post-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.create-post-modal .close-modal {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-gray);
+    transition: all 300ms ease;
+}
+
+.create-post-modal .close-modal:hover {
+    color: var(--color-danger);
+}
+
+.create-post-form .post-input-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.create-post-form textarea {
+    flex: 1;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    border: none;
+    outline: none;
+    resize: none;
+    min-height: 100px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.create-post-form textarea:focus {
+    background: var(--color-white);
+    box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.create-post-form .post-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.create-post-form .image-upload {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-light);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+
+.create-post-form .image-upload:hover {
+    background: var(--color-secondary);
+}
+
+.create-post-form .image-upload i {
+    font-size: 1.2rem;
+    color: var(--color-primary);
+}
+
+.create-post-form .image-preview {
+    margin-bottom: 1rem;
+}
+
+.create-post-form .preview-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    border-radius: var(--card-border-radius);
+    background: var(--color-light);
+}
+
+.create-post-form .preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-height: 300px;
+}
+
+.create-post-form .remove-image {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 300ms ease;
+}
+
+.create-post-form .remove-image:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.create-post-form button[type="submit"] {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 
