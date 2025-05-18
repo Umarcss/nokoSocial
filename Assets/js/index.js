@@ -1,5 +1,5 @@
 // SIDEBAR
-const menuitems = document.querySelectorAll('.menuitem')
+const menuitems = document.querySelectorAll('.menu-item')
 
 //remove active class from all menu items
 const changeActiveitem = () => {
@@ -12,14 +12,134 @@ menuitems.forEach(item => {
     item.addEventListener('click', () => {
         changeActiveitem();
         item.classList.add('active');
-        if(item.id != 'notifications'){
-            document.querySelector('.notification-popup').style.display = 'none';
-        }else{
-            document.querySelector('.notification-popup').style.display = 'block';
+        
+        // Handle notifications popup
+        const notificationsPopup = document.querySelector('.notifications-popup');
+        if (item.id === 'notifications') {
+            notificationsPopup.style.display = 'block';
             document.querySelector('#notifications .notification-count').style.display = 'none';
+        } else {
+            notificationsPopup.style.display = 'none';
         }
     })
 })
+
+// Close notification popup when clicking outside
+document.addEventListener('click', (e) => {
+    const notificationsPopup = document.querySelector('.notifications-popup');
+    const notificationsButton = document.querySelector('#notifications');
+    
+    if (!notificationsButton.contains(e.target) && !notificationsPopup.contains(e.target)) {
+        notificationsPopup.style.display = 'none';
+    }
+});
+
+// Add "See All" button to notifications popup
+const notificationsPopup = document.querySelector('.notifications-popup');
+if (notificationsPopup) {
+    const seeAllButton = document.createElement('a');
+    seeAllButton.href = 'notifications.html';
+    seeAllButton.className = 'btn btn-primary see-all-btn';
+    seeAllButton.innerHTML = '<i class="uil uil-arrow-right"></i> See All Notifications';
+    notificationsPopup.appendChild(seeAllButton);
+}
+
+// Add styles for notifications popup
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+    .notifications-popup {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 30rem;
+        background: var(--color-white);
+        border-radius: var(--card-border-radius);
+        padding: 1.5rem;
+        box-shadow: 0 0 2rem rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        display: none;
+        transition: all 300ms ease;
+        max-height: calc(100vh - 7rem);
+        overflow-y: auto;
+    }
+
+    .notifications-popup::before {
+        content: "";
+        width: 1.2rem;
+        height: 1.2rem;
+        display: block;
+        background: var(--color-white);
+        position: absolute;
+        left: 50%;
+        top: -0.6rem;
+        transform: translateX(-50%) rotate(45deg);
+        box-shadow: -2px -2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .notifications-popup > div {
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 300ms ease;
+    }
+
+    .notifications-popup > div:hover {
+        background: var(--color-light);
+    }
+
+    .notifications-popup .profile-photo {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--color-primary);
+    }
+
+    .notifications-popup .notification-body {
+        flex: 1;
+        line-height: 1.4;
+    }
+
+    .notifications-popup .notification-body b {
+        color: var(--color-dark);
+        font-weight: 600;
+    }
+
+    .notifications-popup .notification-body small {
+        display: block;
+        margin-top: 0.3rem;
+        color: var(--color-gray);
+        font-size: 0.8rem;
+    }
+
+    .notifications-popup .see-all-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.8rem;
+        font-weight: 500;
+        transition: all 300ms ease;
+    }
+
+    .notifications-popup .see-all-btn:hover {
+        transform: translateX(5px);
+    }
+
+    .notifications-popup .see-all-btn i {
+        transition: all 300ms ease;
+    }
+
+    .notifications-popup .see-all-btn:hover i {
+        transform: translateX(3px);
+    }
+`;
+document.head.appendChild(notificationStyles);
 
 // MESSAGE
 const messagesNotification = document.querySelector('#messages-notifications');
@@ -213,6 +333,115 @@ Bg3.addEventListener('click', () => {
 });
 
 // END 
+
+// Bookmark functionality
+const bookmarkButtons = document.querySelectorAll('.bookmark');
+bookmarkButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const icon = button.querySelector('i');
+        const feed = button.closest('.feed');
+        const postData = {
+            id: feed.dataset.postId || Date.now(),
+            user: {
+                name: feed.querySelector('.logo h3').textContent,
+                image: feed.querySelector('.profile-photo img').src,
+                location: feed.querySelector('.logo small').textContent
+            },
+            content: feed.querySelector('.caption p').textContent,
+            image: feed.querySelector('.photo img').src,
+            likes: feed.querySelector('.liked-by p').textContent,
+            comments: feed.querySelector('.comments').textContent
+        };
+
+        if (icon.classList.contains('uil-bookmark')) {
+            // Add bookmark
+            icon.classList.remove('uil-bookmark');
+            icon.classList.add('uil-bookmark-full');
+            
+            // Store in localStorage
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+            bookmarks.push(postData);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            
+            showToast('Post bookmarked successfully');
+        } else {
+            // Remove bookmark
+            icon.classList.remove('uil-bookmark-full');
+            icon.classList.add('uil-bookmark');
+            
+            // Remove from localStorage
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+            const updatedBookmarks = bookmarks.filter(bookmark => bookmark.id !== postData.id);
+            localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
+            
+            showToast('Bookmark removed');
+        }
+    });
+});
+
+// Initialize bookmarks
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if posts are already bookmarked
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    bookmarkButtons.forEach(button => {
+        const feed = button.closest('.feed');
+        const postId = feed.dataset.postId || Date.now();
+        const isBookmarked = bookmarks.some(bookmark => bookmark.id === postId);
+        
+        if (isBookmarked) {
+            const icon = button.querySelector('i');
+            icon.classList.remove('uil-bookmark');
+            icon.classList.add('uil-bookmark-full');
+        }
+    });
+});
+
+// Toast Notification
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    // Trigger animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+// Add toast styles
+const style = document.createElement('style');
+style.textContent = `
+    .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--color-primary);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 300ms ease;
+        z-index: 1000;
+    }
+    
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+`;
+document.head.appendChild(style);
 
 
 

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - nokoSocial</title>
+    <link rel="stylesheet" href="Assets/css/style.css">
+    <link rel="stylesheet" href="Assets/css/notifications.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <h2 class="logo">
+                nokoSocial
+            </h2>
+            <div class="search-bar">
+                <i class="uil uil-search"></i>
+                <input type="search" placeholder="Search notifications">
+            </div>
+            <div class="create">
+                <label class="btn btn-primary" for="create-post">Create</label>
+                <div class="profile-photo">
+                    <img src="Assets/images/profile-1.jpeg" alt="Profile Photo">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Left Sidebar -->
+            <div class="left">
+                <a href="index.html" class="profile">
+                    <div class="profile-photo">
+                        <img src="Assets/images/profile-1.jpeg" alt="Profile Photo">
+                    </div>
+                    <div class="handle">
+                        <h4>Dana</h4>
+                        <p class="text-muted">@dayi</p>
+                    </div>
+                </a>
+                <div class="sidebar">
+                    <a href="index.html" class="menu-item">
+                        <span><i class="uil uil-home"></i></span>
+                        <h3>Home</h3>
+                    </a>
+                    <a href="notifications.html" class="menu-item active">
+                        <span><i class="uil uil-bell"></i></span>
+                        <h3>Notifications</h3>
+                    </a>
+                    <!-- Add other menu items as needed -->
+                </div>
+            </div>
+
+            <!-- Middle Section - Notifications -->
+            <div class="middle">
+                <div class="notifications-container">
+                    <div class="notifications-header">
+                        <h2>Notifications</h2>
+                        <div class="notifications-actions">
+                            <button class="btn btn-primary" id="mark-all-read">
+                                <i class="uil uil-check-circle"></i>
+                                Mark all as read
+                            </button>
+                            <div class="notifications-filter">
+                                <select id="filter-notifications">
+                                    <option value="all">All Notifications</option>
+                                    <option value="mentions">Mentions</option>
+                                    <option value="likes">Likes</option>
+                                    <option value="comments">Comments</option>
+                                    <option value="follows">Follows</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notifications-list">
+                        <!-- Today's Notifications -->
+                        <div class="notifications-group">
+                            <h3 class="notifications-date">Today</h3>
+                            
+                            <!-- Notification Item -->
+                            <div class="notification-item unread">
+                                <div class="notification-icon">
+                                    <i class="uil uil-heart"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="profile-photo">
+                                        <img src="Assets/images/profile-2.jpg" alt="User Profile">
+                                    </div>
+                                    <div class="notification-text">
+                                        <p><b>Keke Benjamin</b> and <b>283 others</b> liked your post</p>
+                                        <small class="text-muted">4 minutes ago</small>
+                                    </div>
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-icon"><i class="uil uil-ellipsis-h"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Another Notification Item -->
+                            <div class="notification-item unread">
+                                <div class="notification-icon">
+                                    <i class="uil uil-comment-dots"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="profile-photo">
+                                        <img src="Assets/images/profile-3.jpeg" alt="User Profile">
+                                    </div>
+                                    <div class="notification-text">
+                                        <p><b>John Doe</b> commented on your post</p>
+                                        <small class="text-muted">1 hour ago</small>
+                                    </div>
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-icon"><i class="uil uil-ellipsis-h"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yesterday's Notifications -->
+                        <div class="notifications-group">
+                            <h3 class="notifications-date">Yesterday</h3>
+                            
+                            <!-- Notification Item -->
+                            <div class="notification-item">
+                                <div class="notification-icon">
+                                    <i class="uil uil-user-plus"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="profile-photo">
+                                        <img src="Assets/images/profile-4.jpeg" alt="User Profile">
+                                    </div>
+                                    <div class="notification-text">
+                                        <p><b>Mary Oppong</b> started following you</p>
+                                        <small class="text-muted">2 days ago</small>
+                                    </div>
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-icon"><i class="uil uil-ellipsis-h"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section -->
+            <div class="right">
+                <div class="notifications-stats">
+                    <h4>Notification Stats</h4>
+                    <div class="stats-card">
+                        <div class="stat-item">
+                            <i class="uil uil-bell"></i>
+                            <div>
+                                <h5>Total Notifications</h5>
+                                <p>156</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="uil uil-eye-slash"></i>
+                            <div>
+                                <h5>Unread</h5>
+                                <p>23</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="Assets/js/notifications.js"></script>
+</body>
+</html> 
