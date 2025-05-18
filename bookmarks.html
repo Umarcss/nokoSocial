@@ -21,7 +21,7 @@
                 <input type="search" placeholder="Search bookmarks">
             </div>
             <div class="create">
-                <label class="btn btn-primary" for="create-post">Create</label>
+                <!-- <label class="btn btn-primary" for="create-post">Create</label> -->
                 <div class="profile-photo">
                     <img src="Assets/images/profile-1.jpeg" alt="Profile Photo">
                 </div>
@@ -59,24 +59,8 @@
             <div class="middle">
                 <div class="bookmarks-container">
                     <div class="bookmarks-header">
-                        <div class="header-left">
-                            <h2>My Bookmarks</h2>
-                            <div class="bookmarks-stats">
-                                <span class="stat">
-                                    <i class="uil uil-bookmark"></i>
-                                    <span class="total-bookmarks">0</span> bookmarks
-                                </span>
-                                <span class="stat">
-                                    <i class="uil uil-folder"></i>
-                                    <span class="total-collections">0</span> collections
-                                </span>
-                            </div>
-                        </div>
+                        <h2>Your Bookmarks</h2>
                         <div class="bookmarks-actions">
-                            <div class="search-bookmarks">
-                                <i class="uil uil-search"></i>
-                                <input type="search" id="search-bookmarks" placeholder="Search bookmarks...">
-                            </div>
                             <div class="bookmarks-filter">
                                 <select id="filter-bookmarks">
                                     <option value="all">All Bookmarks</option>
@@ -84,158 +68,71 @@
                                     <option value="articles">Articles</option>
                                     <option value="videos">Videos</option>
                                     <option value="images">Images</option>
-                                    <option value="links">Links</option>
                                 </select>
                             </div>
                             <div class="sort-options">
                                 <select id="sort-bookmarks">
                                     <option value="newest">Newest First</option>
                                     <option value="oldest">Oldest First</option>
-                                    <option value="name">Name (A-Z)</option>
+                                    <option value="name">By Name</option>
                                     <option value="popular">Most Popular</option>
-                                    <option value="recently-added">Recently Added</option>
-                                    <option value="most-viewed">Most Viewed</option>
                                 </select>
                             </div>
                             <div class="view-options">
-                                <button class="btn-icon active" data-view="grid" title="Grid View">
+                                <button class="btn-icon active" data-view="grid">
                                     <i class="uil uil-grid"></i>
                                 </button>
-                                <button class="btn-icon" data-view="list" title="List View">
+                                <button class="btn-icon" data-view="list">
                                     <i class="uil uil-list-ul"></i>
                                 </button>
-                                <button class="btn-icon" data-view="compact" title="Compact View">
-                                    <i class="uil uil-compress-arrows"></i>
+                                <button class="btn-icon" data-view="compact">
+                                    <i class="uil uil-th-large"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     <div class="bookmarks-list grid-view">
-                        <!-- Bookmarked Post -->
-                        <div class="bookmark-item" data-type="posts">
-                            <div class="bookmark-header">
-                                <div class="user-info">
-                                    <div class="profile-photo">
-                                        <img src="Assets/images/profile-2.jpg" alt="User Profile">
-                                    </div>
-                                    <div class="user-details">
-                                        <h4>Lana Rose</h4>
-                                        <small class="text-muted">Dubai, 15 MINUTES AGO</small>
-                                    </div>
-                                </div>
-                                <div class="bookmark-actions">
-                                    <button class="btn-icon remove-bookmark">
-                                        <i class="uil uil-bookmark-slash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="bookmark-content">
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
-                                <div class="bookmark-media">
-                                    <img src="Assets/images/feed-1.jpg" alt="Post Image">
-                                </div>
-                            </div>
-                            <div class="bookmark-footer">
-                                <div class="interaction-buttons">
-                                    <span><i class="uil uil-heart"></i> 283</span>
-                                    <span><i class="uil uil-comment-dots"></i> 45</span>
-                                    <span><i class="uil uil-share"></i> Share</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Another Bookmarked Post -->
-                        <div class="bookmark-item" data-type="posts">
-                            <div class="bookmark-header">
-                                <div class="user-info">
-                                    <div class="profile-photo">
-                                        <img src="Assets/images/profile-3.jpeg" alt="User Profile">
-                                    </div>
-                                    <div class="user-details">
-                                        <h4>John Doe</h4>
-                                        <small class="text-muted">New York, 2 HOURS AGO</small>
-                                    </div>
-                                </div>
-                                <div class="bookmark-actions">
-                                    <button class="btn-icon remove-bookmark">
-                                        <i class="uil uil-bookmark-slash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="bookmark-content">
-                                <p>Check out this amazing sunset view from my balcony! 🌅</p>
-                                <div class="bookmark-media">
-                                    <img src="Assets/images/feed-2.jpg" alt="Post Image">
-                                </div>
-                            </div>
-                            <div class="bookmark-footer">
-                                <div class="interaction-buttons">
-                                    <span><i class="uil uil-heart"></i> 156</span>
-                                    <span><i class="uil uil-comment-dots"></i> 23</span>
-                                    <span><i class="uil uil-share"></i> Share</span>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Bookmarks will be dynamically loaded here -->
                     </div>
                 </div>
             </div>
 
             <!-- Right Section -->
             <div class="right">
+                <div class="bookmarks-stats">
+                    <h4>Bookmarks Stats</h4>
+                    <div class="stats-card">
+                        <div class="stat-item">
+                            <i class="uil uil-bookmark"></i>
+                            <div>
+                                <h5>Total Bookmarks</h5>
+                                <p class="total-bookmarks">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="uil uil-folder"></i>
+                            <div>
+                                <h5>Collections</h5>
+                                <p class="total-collections">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="collections">
                     <div class="collections-header">
-                        <h4>Collections</h4>
-                        <button class="btn-icon" id="manage-collections" title="Manage Collections">
+                        <h4>Your Collections</h4>
+                        <button class="btn-icon" id="manage-collections">
                             <i class="uil uil-setting"></i>
                         </button>
                     </div>
                     <div class="collection-list">
-                        <div class="collection-item">
-                            <i class="uil uil-folder"></i>
-                            <span>Travel</span>
-                            <small>12 items</small>
-                        </div>
-                        <div class="collection-item">
-                            <i class="uil uil-folder"></i>
-                            <span>Inspiration</span>
-                            <small>23 items</small>
-                        </div>
-                        <div class="collection-item">
-                            <i class="uil uil-folder"></i>
-                            <span>Work</span>
-                            <small>10 items</small>
-                        </div>
+                        <!-- Collections will be dynamically loaded here -->
                     </div>
                     <button class="btn btn-primary create-collection">
-                        <i class="uil uil-plus"></i>
-                        Create Collection
+                        <i class="uil uil-plus"></i> New Collection
                     </button>
-                </div>
-
-                <div class="quick-actions">
-                    <h4>Quick Actions</h4>
-                    <div class="action-buttons">
-                        <button class="btn btn-secondary" id="export-bookmarks">
-                            <i class="uil uil-export"></i>
-                            Export Bookmarks
-                        </button>
-                        <button class="btn btn-secondary" id="import-bookmarks">
-                            <i class="uil uil-import"></i>
-                            Import Bookmarks
-                        </button>
-                        <button class="btn btn-secondary" id="organize-bookmarks">
-                            <i class="uil uil-layer-group"></i>
-                            Organize
-                        </button>
-                    </div>
-                </div>
-
-                <div class="recently-added">
-                    <h4>Recently Added</h4>
-                    <div class="recent-bookmarks">
-                        <!-- Recent bookmarks will be loaded here dynamically -->
-                    </div>
                 </div>
             </div>
         </div>
@@ -251,9 +148,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="collection-management">
-                    <!-- Collection management content will be loaded here -->
-                </div>
+                <!-- Collection management content will be dynamically loaded here -->
             </div>
         </div>
     </div>

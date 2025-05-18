@@ -9,6 +9,15 @@ const createCollectionBtn = document.querySelector('.create-collection');
 const manageCollectionsBtn = document.querySelector('#manage-collections');
 const collectionModal = document.querySelector('#collection-modal');
 const closeModalBtn = document.querySelector('.close-modal');
+const totalBookmarksElement = document.querySelector('.total-bookmarks');
+const totalCollectionsElement = document.querySelector('.total-collections');
+const collectionList = document.querySelector('.collection-list');
+
+// State
+let currentView = 'grid';
+let currentFilter = 'all';
+let currentSort = 'newest';
+let collections = JSON.parse(localStorage.getItem('collections') || '[]');
 
 // Sample Data
 const sampleBookmarks = [
@@ -111,36 +120,125 @@ const sampleCollections = [
     }
 ];
 
+// Enhanced Stats Data
+const statsData = {
+    totalBookmarks: 0,
+    totalCollections: 0,
+    bookmarksByType: {
+        posts: 0,
+        articles: 0,
+        videos: 0,
+        images: 0,
+        links: 0
+    },
+    recentActivity: [],
+    popularTags: new Map(),
+    monthlyStats: new Map()
+};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    loadBookmarks();
+    loadCollections();
+    setupEventListeners();
+    updateStats();
+});
+
+// Event Listeners
+function setupEventListeners() {
+    // View options
+    viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            viewButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentView = btn.dataset.view;
+            updateBookmarksView();
+        });
+    });
+
+    // Filter and sort
+    filterSelect.addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        loadBookmarks();
+    });
+
+    sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        loadBookmarks();
+    });
+
+    // Collection management
+    createCollectionBtn.addEventListener('click', showCreateCollectionModal);
+    manageCollectionsBtn.addEventListener('click', showManageCollectionsModal);
+    closeModalBtn.addEventListener('click', () => collectionModal.classList.remove('show'));
+
+    // Close modal when clicking outside
+    collectionModal.addEventListener('click', (e) => {
+        if (e.target === collectionModal) {
+            collectionModal.classList.remove('show');
+        }
+    });
+}
+
 // Load Bookmarks
 function loadBookmarks() {
-    // Clear existing bookmarks
-    bookmarksList.innerHTML = '';
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    let filteredBookmarks = filterBookmarks(bookmarks);
+    filteredBookmarks = sortBookmarks(filteredBookmarks);
     
-    // Get bookmarks from localStorage or use sample data
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || sampleBookmarks;
+    displayBookmarks(filteredBookmarks);
+    updateStats();
+}
+
+// Filter Bookmarks
+function filterBookmarks(bookmarks) {
+    if (currentFilter === 'all') return bookmarks;
+    
+    return bookmarks.filter(bookmark => {
+        const type = getBookmarkType(bookmark);
+        return type === currentFilter;
+    });
+}
+
+// Sort Bookmarks
+function sortBookmarks(bookmarks) {
+    switch (currentSort) {
+        case 'newest':
+            return bookmarks.sort((a, b) => b.id - a.id);
+        case 'oldest':
+            return bookmarks.sort((a, b) => a.id - b.id);
+        case 'name':
+            return bookmarks.sort((a, b) => a.user.name.localeCompare(b.user.name));
+        case 'popular':
+            return bookmarks.sort((a, b) => {
+                const likesA = parseInt(a.likes.match(/\d+/)[0]);
+                const likesB = parseInt(b.likes.match(/\d+/)[0]);
+                return likesB - likesA;
+            });
+        default:
+            return bookmarks;
+    }
+}
+
+// Display Bookmarks
+function displayBookmarks(bookmarks) {
+    bookmarksList.innerHTML = '';
     
     if (bookmarks.length === 0) {
         showEmptyState();
         return;
     }
 
-    // Create and append bookmark elements
     bookmarks.forEach(bookmark => {
         const bookmarkElement = createBookmarkElement(bookmark);
         bookmarksList.appendChild(bookmarkElement);
     });
-
-    // Update stats
-    updateStats();
 }
 
 // Create Bookmark Element
 function createBookmarkElement(bookmark) {
     const div = document.createElement('div');
     div.className = 'bookmark-item';
-    div.dataset.type = bookmark.type;
-    div.dataset.id = bookmark.id;
-
     div.innerHTML = `
         <div class="bookmark-header">
             <div class="user-info">
@@ -153,29 +251,36 @@ function createBookmarkElement(bookmark) {
                 </div>
             </div>
             <div class="bookmark-actions">
-                <button class="btn-icon remove-bookmark" title="Remove Bookmark">
-                    <i class="uil uil-bookmark-slash"></i>
+                <button class="btn-icon remove-bookmark" data-id="${bookmark.id}">
+                    <i class="uil uil-trash-alt"></i>
                 </button>
             </div>
         </div>
         <div class="bookmark-content">
             <p>${bookmark.content}</p>
-            <div class="bookmark-media">
-                <img src="${bookmark.image}" alt="Bookmark Media">
-            </div>
+        </div>
+        <div class="bookmark-media">
+            <img src="${bookmark.image}" alt="Bookmark content">
         </div>
         <div class="bookmark-footer">
             <div class="interaction-buttons">
                 <span><i class="uil uil-heart"></i> ${bookmark.likes}</span>
                 <span><i class="uil uil-comment-dots"></i> ${bookmark.comments}</span>
-                <span><i class="uil uil-share"></i> Share</span>
+            </div>
+            <div class="collection-select">
+                <select class="add-to-collection" data-id="${bookmark.id}">
+                    <option value="">Add to collection...</option>
+                    ${collections.map(collection => `
+                        <option value="${collection.id}">${collection.name}</option>
+                    `).join('')}
+                </select>
             </div>
         </div>
     `;
 
-    // Add remove bookmark functionality
-    const removeBtn = div.querySelector('.remove-bookmark');
-    removeBtn.addEventListener('click', () => removeBookmark(bookmark.id));
+    // Add event listeners
+    div.querySelector('.remove-bookmark').addEventListener('click', () => removeBookmark(bookmark.id));
+    div.querySelector('.add-to-collection').addEventListener('change', (e) => addToCollection(bookmark.id, e.target.value));
 
     return div;
 }
@@ -186,138 +291,323 @@ function showEmptyState() {
         <div class="empty-state">
             <i class="uil uil-bookmark"></i>
             <h3>No Bookmarks Yet</h3>
-            <p>Start saving posts, articles, and more to your bookmarks!</p>
+            <p>Start saving posts you love to your bookmarks!</p>
         </div>
     `;
 }
 
 // Remove Bookmark
 function removeBookmark(id) {
-    const bookmark = document.querySelector(`.bookmark-item[data-id="${id}"]`);
-    if (bookmark) {
-        // Add fade-out animation
-        bookmark.style.opacity = '0';
-        bookmark.style.transform = 'scale(0.9)';
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const updatedBookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
+    localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
+    
+    showToast('Bookmark removed successfully');
+    loadBookmarks();
+}
+
+// Add to Collection
+function addToCollection(bookmarkId, collectionId) {
+    if (!collectionId) return;
+    
+    const collections = JSON.parse(localStorage.getItem('collections') || '[]');
+    const collection = collections.find(c => c.id === collectionId);
+    
+    if (collection) {
+        if (!collection.bookmarks) collection.bookmarks = [];
+        if (!collection.bookmarks.includes(bookmarkId)) {
+            collection.bookmarks.push(bookmarkId);
+            localStorage.setItem('collections', JSON.stringify(collections));
+            showToast('Added to collection successfully');
+        }
+    }
+}
+
+// Load Collections
+function loadCollections() {
+    collectionList.innerHTML = '';
+    
+    collections.forEach(collection => {
+        const div = document.createElement('div');
+        div.className = 'collection-item';
+        div.innerHTML = `
+            <i class="uil uil-folder"></i>
+            <span>${collection.name}</span>
+            <small>${collection.bookmarks?.length || 0} items</small>
+        `;
+        collectionList.appendChild(div);
+    });
+}
+
+// Show Create Collection Modal
+function showCreateCollectionModal() {
+    const modalBody = collectionModal.querySelector('.modal-body');
+    modalBody.innerHTML = `
+        <form id="create-collection-form">
+            <div class="form-group">
+                <label for="collection-name">Collection Name</label>
+                <input type="text" id="collection-name" required>
+            </div>
+            <div class="form-group">
+                <label for="collection-description">Description (optional)</label>
+                <textarea id="collection-description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Collection</button>
+        </form>
+    `;
+
+    const form = modalBody.querySelector('#create-collection-form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = form.querySelector('#collection-name').value;
+        const description = form.querySelector('#collection-description').value;
         
-        setTimeout(() => {
-            bookmark.remove();
-            
-            // Update localStorage
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || sampleBookmarks;
-            const updatedBookmarks = bookmarks.filter(b => b.id !== id);
-            localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
-            
-            // Update stats
-            updateStats();
-            
-            // Show toast
-            showToast('Bookmark removed successfully');
-            
-            // Show empty state if no bookmarks left
-            if (updatedBookmarks.length === 0) {
-                showEmptyState();
-            }
-        }, 300);
+        createCollection(name, description);
+        collectionModal.classList.remove('show');
+    });
+
+    collectionModal.classList.add('show');
+}
+
+// Create Collection
+function createCollection(name, description) {
+    const collection = {
+        id: Date.now().toString(),
+        name,
+        description,
+        bookmarks: []
+    };
+    
+    collections.push(collection);
+    localStorage.setItem('collections', JSON.stringify(collections));
+    
+    showToast('Collection created successfully');
+    loadCollections();
+    updateStats();
+}
+
+// Show Manage Collections Modal
+function showManageCollectionsModal() {
+    const modalBody = collectionModal.querySelector('.modal-body');
+    modalBody.innerHTML = `
+        <div class="collections-management">
+            ${collections.map(collection => `
+                <div class="collection-item" data-id="${collection.id}">
+                    <div class="collection-info">
+                        <i class="uil uil-folder"></i>
+                        <span>${collection.name}</span>
+                        <small>${collection.bookmarks?.length || 0} items</small>
+                    </div>
+                    <div class="collection-actions">
+                        <button class="btn-icon edit-collection" data-id="${collection.id}">
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button class="btn-icon delete-collection" data-id="${collection.id}">
+                            <i class="uil uil-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    // Add event listeners for edit and delete
+    modalBody.querySelectorAll('.edit-collection').forEach(btn => {
+        btn.addEventListener('click', () => editCollection(btn.dataset.id));
+    });
+
+    modalBody.querySelectorAll('.delete-collection').forEach(btn => {
+        btn.addEventListener('click', () => deleteCollection(btn.dataset.id));
+    });
+
+    collectionModal.classList.add('show');
+}
+
+// Edit Collection
+function editCollection(id) {
+    const collection = collections.find(c => c.id === id);
+    if (!collection) return;
+
+    const modalBody = collectionModal.querySelector('.modal-body');
+    modalBody.innerHTML = `
+        <form id="edit-collection-form">
+            <div class="form-group">
+                <label for="collection-name">Collection Name</label>
+                <input type="text" id="collection-name" value="${collection.name}" required>
+            </div>
+            <div class="form-group">
+                <label for="collection-description">Description</label>
+                <textarea id="collection-description">${collection.description || ''}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    `;
+
+    const form = modalBody.querySelector('#edit-collection-form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = form.querySelector('#collection-name').value;
+        const description = form.querySelector('#collection-description').value;
+        
+        collection.name = name;
+        collection.description = description;
+        localStorage.setItem('collections', JSON.stringify(collections));
+        
+        showToast('Collection updated successfully');
+        collectionModal.classList.remove('show');
+        loadCollections();
+    });
+}
+
+// Delete Collection
+function deleteCollection(id) {
+    if (confirm('Are you sure you want to delete this collection?')) {
+        collections = collections.filter(c => c.id !== id);
+        localStorage.setItem('collections', JSON.stringify(collections));
+        
+        showToast('Collection deleted successfully');
+        loadCollections();
+        updateStats();
     }
 }
 
 // Update Stats
 function updateStats() {
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || sampleBookmarks;
-    const collections = JSON.parse(localStorage.getItem('collections')) || sampleCollections;
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const collections = JSON.parse(localStorage.getItem('collections') || '[]');
     
-    document.querySelector('.total-bookmarks').textContent = bookmarks.length;
-    document.querySelector('.total-collections').textContent = collections.length;
-}
-
-// Search Bookmarks
-function searchBookmarks(query) {
-    const bookmarks = document.querySelectorAll('.bookmark-item');
-    query = query.toLowerCase();
+    // Reset stats
+    statsData.totalBookmarks = bookmarks.length;
+    statsData.totalCollections = collections.length;
+    statsData.bookmarksByType = {
+        posts: 0,
+        articles: 0,
+        videos: 0,
+        images: 0,
+        links: 0
+    };
+    statsData.popularTags.clear();
+    statsData.monthlyStats.clear();
     
+    // Calculate stats
     bookmarks.forEach(bookmark => {
-        const content = bookmark.querySelector('.bookmark-content p').textContent.toLowerCase();
-        const username = bookmark.querySelector('.user-details h4').textContent.toLowerCase();
+        // Count by type
+        const type = getBookmarkType(bookmark);
+        statsData.bookmarksByType[type]++;
         
-        if (content.includes(query) || username.includes(query)) {
-            bookmark.style.display = '';
-        } else {
-            bookmark.style.display = 'none';
-        }
-    });
-}
-
-// Filter Bookmarks
-function filterBookmarks(type) {
-    const bookmarks = document.querySelectorAll('.bookmark-item');
-    
-    bookmarks.forEach(bookmark => {
-        if (type === 'all' || bookmark.dataset.type === type) {
-            bookmark.style.display = '';
-        } else {
-            bookmark.style.display = 'none';
-        }
-    });
-}
-
-// Sort Bookmarks
-function sortBookmarks(criteria) {
-    const bookmarks = Array.from(document.querySelectorAll('.bookmark-item'));
-    const bookmarksList = document.querySelector('.bookmarks-list');
-    
-    bookmarks.sort((a, b) => {
-        switch (criteria) {
-            case 'newest':
-                return new Date(b.dataset.date) - new Date(a.dataset.date);
-            case 'oldest':
-                return new Date(a.dataset.date) - new Date(b.dataset.date);
-            case 'name':
-                return a.querySelector('.user-details h4').textContent.localeCompare(
-                    b.querySelector('.user-details h4').textContent
-                );
-            case 'popular':
-                return parseInt(b.dataset.likes) - parseInt(a.dataset.likes);
-            default:
-                return 0;
-        }
+        // Track tags
+        const tags = bookmark.content.match(/#\w+/g) || [];
+        tags.forEach(tag => {
+            statsData.popularTags.set(tag, (statsData.popularTags.get(tag) || 0) + 1);
+        });
+        
+        // Track monthly stats
+        const date = new Date(bookmark.date);
+        const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        statsData.monthlyStats.set(monthKey, (statsData.monthlyStats.get(monthKey) || 0) + 1);
     });
     
-    bookmarks.forEach(bookmark => bookmarksList.appendChild(bookmark));
+    // Update UI
+    updateStatsUI();
 }
 
-// Create Collection
-function createCollection() {
-    const name = prompt('Enter collection name:');
-    if (name) {
-        const collections = JSON.parse(localStorage.getItem('collections')) || sampleCollections;
-        const newCollection = {
-            id: Date.now(),
-            name,
-            count: 0,
-            icon: 'uil-folder'
-        };
+// Update Stats UI
+function updateStatsUI() {
+    const statsContainer = document.querySelector('.bookmarks-stats');
+    if (!statsContainer) return;
+    
+    // Calculate trends
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const currentMonthKey = `${new Date().getFullYear()}-${currentMonth + 1}`;
+    const lastMonthKey = `${new Date().getFullYear()}-${lastMonth + 1}`;
+    
+    const currentMonthCount = statsData.monthlyStats.get(currentMonthKey) || 0;
+    const lastMonthCount = statsData.monthlyStats.get(lastMonthKey) || 0;
+    const totalTrend = lastMonthCount ? ((currentMonthCount - lastMonthCount) / lastMonthCount * 100).toFixed(1) : 0;
+    
+    statsContainer.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="uil uil-bookmark"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value">${statsData.totalBookmarks}</div>
+                <div class="stat-label">Total Bookmarks</div>
+                <div class="stat-trend ${totalTrend >= 0 ? 'positive' : 'negative'}">
+                    <i class="uil uil-arrow-${totalTrend >= 0 ? 'up' : 'down'}"></i>
+                    <span>${Math.abs(totalTrend)}%</span>
+                </div>
+            </div>
+        </div>
         
-        collections.push(newCollection);
-        localStorage.setItem('collections', JSON.stringify(collections));
-        
-        // Update UI
-        const collectionList = document.querySelector('.collection-list');
-        const collectionElement = document.createElement('div');
-        collectionElement.className = 'collection-item';
-        collectionElement.innerHTML = `
-            <i class="uil ${newCollection.icon}"></i>
-            <span>${newCollection.name}</span>
-            <small>0 items</small>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="uil uil-folder"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value">${statsData.totalCollections}</div>
+                <div class="stat-label">Collections</div>
+                <div class="stat-trend positive">
+                    <i class="uil uil-arrow-up"></i>
+                    <span>${statsData.totalCollections > 0 ? 'Active' : 'New'}</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add compact monthly stats
+    const monthlyData = Array.from(statsData.monthlyStats.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .slice(-6);
+    
+    const chartContainer = document.createElement('div');
+    chartContainer.className = 'monthly-stats';
+    chartContainer.innerHTML = `
+        <h4>Monthly Activity</h4>
+        <div class="chart">
+            ${monthlyData.map(([month, count]) => `
+                <div class="chart-bar" style="height: ${(count / Math.max(...monthlyData.map(d => d[1]))) * 100}%">
+                    <span class="bar-value">${count}</span>
+                    <span class="bar-label">${new Date(month).toLocaleString('default', { month: 'short' })}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    statsContainer.appendChild(chartContainer);
+    
+    // Add compact popular tags
+    const popularTags = Array.from(statsData.popularTags.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    if (popularTags.length > 0) {
+        const tagsSection = document.createElement('div');
+        tagsSection.className = 'popular-tags';
+        tagsSection.innerHTML = `
+            <h4>Popular Tags</h4>
+            <div class="tags-list">
+                ${popularTags.map(([tag, count]) => `
+                    <span class="tag">
+                        ${tag} <small>${count}</small>
+                    </span>
+                `).join('')}
+            </div>
         `;
-        collectionList.appendChild(collectionElement);
-        
-        // Update stats
-        updateStats();
-        showToast('Collection created successfully');
+        statsContainer.appendChild(tagsSection);
     }
 }
 
-// Show Toast
+// Helper Functions
+function getBookmarkType(bookmark) {
+    const imageUrl = bookmark.image.toLowerCase();
+    if (imageUrl.includes('video')) return 'videos';
+    if (imageUrl.includes('article')) return 'articles';
+    if (imageUrl.match(/\.(jpg|jpeg|png|gif)$/)) return 'images';
+    return 'posts';
+}
+
 function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -325,12 +615,10 @@ function showToast(message) {
     
     document.body.appendChild(toast);
     
-    // Trigger animation
     setTimeout(() => {
         toast.classList.add('show');
     }, 100);
     
-    // Remove toast after 3 seconds
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
@@ -339,46 +627,7 @@ function showToast(message) {
     }, 3000);
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    loadBookmarks();
-    
-    // Search
-    searchInput.addEventListener('input', (e) => searchBookmarks(e.target.value));
-    
-    // Filter
-    filterSelect.addEventListener('change', (e) => filterBookmarks(e.target.value));
-    
-    // Sort
-    sortSelect.addEventListener('change', (e) => sortBookmarks(e.target.value));
-    
-    // View Toggle
-    viewButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            viewButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const view = button.dataset.view;
-            bookmarksList.className = `bookmarks-list ${view}-view`;
-        });
-    });
-    
-    // Create Collection
-    createCollectionBtn.addEventListener('click', createCollection);
-    
-    // Manage Collections Modal
-    manageCollectionsBtn.addEventListener('click', () => {
-        collectionModal.classList.add('show');
-    });
-    
-    closeModalBtn.addEventListener('click', () => {
-        collectionModal.classList.remove('show');
-    });
-    
-    // Close modal when clicking outside
-    collectionModal.addEventListener('click', (e) => {
-        if (e.target === collectionModal) {
-            collectionModal.classList.remove('show');
-        }
-    });
-}); 
+// Update Bookmarks View
+function updateBookmarksView() {
+    bookmarksList.className = `bookmarks-list ${currentView}-view`;
+} 
