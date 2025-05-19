@@ -171,6 +171,7 @@ main .container{
      cursor: pointer;
      transition: all 300ms ease;
      position: relative;
+     color: #000;
  }
 
  .left .sidebar .menu-item:hover{

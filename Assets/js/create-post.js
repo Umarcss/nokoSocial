@@ -71,7 +71,7 @@ function showCreatePostModal() {
                     <div class="profile-photo">
                         <img src="Assets/images/profile-1.jpeg" alt="Profile Photo">
                     </div>
-                    <textarea placeholder="What's on your mind, Dana?" required></textarea>
+                    <textarea placeholder="What's on your mind, Dawendoski?" required></textarea>
                 </div>
                 <div class="post-options">
                     <div class="image-upload">
@@ -152,7 +152,7 @@ function createNewPost(content, imageUrl = null) {
 
     // Get current user info
     const currentUser = {
-        name: 'Dana',
+        name: 'Dawendoski',
         image: 'Assets/images/profile-1.jpeg',
         location: 'Just now'
     };
@@ -352,7 +352,7 @@ function addComment(commentInput, commentsList, parentComment = null) {
         <div class="comment-content">
             <div class="comment-user">
                 <img src="Assets/images/profile-1.jpeg" alt="User" class="comment-avatar">
-                <span class="comment-username">Dana</span>
+                <span class="comment-username">Dawendoski</span>
             </div>
             <p>${content}</p>
             <div class="comment-actions">
