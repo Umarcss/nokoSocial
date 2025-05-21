@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - NokoSocial</title>
+    <link rel="stylesheet" href="Assets/css/style.css">
+    <link rel="stylesheet" href="Assets/css/explore.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <div class="container">
+        <!-- ================LEFT=============== -->
+        <aside>
+            <div class="left">
+                <a class="profile">
+                    <div class="profile-photo">
+                        <img src="Assets/images/profile-1.jpeg" alt="Profile Photo">
+                    </div>
+                    <div class="handle">
+                        <h4>Dawendoski</h4>
+                        <p class="text-muted">
+                            @Dawendosk
+                        </p>
+                    </div>
+                </a>
+                <!-- ----------------SIDEBAR------------ -->
+                <div class="sidebar">
+                    <a href="index.html" class="menu-item">
+                        <span><i class="uil uil-home"></i></span><h3>Home</h3>
+                    </a>
+                    <a href="explore.html" class="menu-item active">
+                        <span><i class="uil uil-compass"></i></span><h3>Explore</h3>
+                    </a>
+                    <a href="notifications.html" class="menu-item" id="notifications">
+                        <span><i class="uil uil-bell"> <small class="notification-count">9+</small></i></span><h3>Notification</h3>
+                    </a>
+                    <a href="messages.html" class="menu-item" id="messages-notifications">
+                        <span><i class="uil uil-envelope"> <small class="notification-count">6</small></i></span><h3>Messages</h3>
+                    </a>
+                    <a href="bookmarks.html" class="menu-item">
+                        <span><i class="uil uil-bookmark"></i></span><h3>Bookmarks</h3>
+                    </a>
+                    <a href="analytics.html" class="menu-item">
+                        <span><i class="uil uil-chart-line"></i></span><h3>Analytics</h3>
+                    </a>
+                    <a href="#" class="menu-item" id="theme-menu">
+                        <span><i class="uil uil-palette"></i></span><h3>Theme</h3>
+                    </a>
+                    <a href="settings.html" class="menu-item">
+                        <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================MAIN=============== -->
+        <main>
+            <div class="top">
+                <h1>Explore</h1>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search posts, people, or hashtags...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="active">All</button>
+                    <button>Posts</button>
+                    <button>People</button>
+                    <button>Hashtags</button>
+                </div>
+            </div>
+
+            <!-- Categories Section -->
+            <div class="categories-section">
+                <h2>Categories</h2>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <i class="fas fa-camera"></i>
+                        <h3>Photography</h3>
+                        <p>1.2M posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-music"></i>
+                        <h3>Music</h3>
+                        <p>856K posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-utensils"></i>
+                        <h3>Food</h3>
+                        <p>2.1M posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-running"></i>
+                        <h3>Fitness</h3>
+                        <p>750K posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>Art</h3>
+                        <p>1.5M posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Gaming</h3>
+                        <p>2.3M posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-plane"></i>
+                        <h3>Travel</h3>
+                        <p>1.8M posts</p>
+                    </div>
+                    <div class="category-card">
+                        <i class="fas fa-code"></i>
+                        <h3>Technology</h3>
+                        <p>1.9M posts</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending Section -->
+            <div class="trending-section">
+                <h2>Trending Now</h2>
+                <div class="trending-grid">
+                    <div class="trending-card">
+                        <div class="trending-image">
+                            <img src="Assets/images/feed-3.jpg" alt="Trending Post">
+                            <div class="trending-overlay">
+                                <span class="trending-tag">#Photography</span>
+                            </div>
+                        </div>
+                        <div class="trending-content">
+                            <div class="trending-user">
+                                <img src="Assets/images/profile-2.jpeg" alt="User">
+                                <div>
+                                    <h4>Sarah Johnson</h4>
+                                    <small>2 hours ago</small>
+                                </div>
+                            </div>
+                            <p>Amazing sunset at the beach! 🌅 #nature #photography</p>
+                            <div class="trending-stats">
+                                <span><i class="far fa-heart"></i> 2.4K</span>
+                                <span><i class="far fa-comment"></i> 156</span>
+                                <span><i class="far fa-share-square"></i> 89</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <div class="trending-image">
+                            <img src="https://i.redd.it/vbzncj85i9pa1.jpg" alt="Trending Post">
+                            <div class="trending-overlay">
+                                <span class="trending-tag">#Food</span>
+                            </div>
+                        </div>
+                        <div class="trending-content">
+                            <div class="trending-user">
+                                <img src="Assets/images/profile-3.jpeg" alt="User">
+                                <div>
+                                    <h4>Mike Wilson</h4>
+                                    <small>4 hours ago</small>
+                                </div>
+                            </div>
+                            <p>Homemade pasta night! 🍝 #foodie #cooking</p>
+                            <div class="trending-stats">
+                                <span><i class="far fa-heart"></i> 1.8K</span>
+                                <span><i class="far fa-comment"></i> 98</span>
+                                <span><i class="far fa-share-square"></i> 45</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <div class="trending-image">
+                            <img src="https://cdn.concreteplayground.com/content/uploads/2022/12/jezael-melgoza-alY6_OpdwRQ-unsplash.jpg" alt="Trending Post">
+                            <div class="trending-overlay">
+                                <span class="trending-tag">#Travel</span>
+                            </div>
+                        </div>
+                        <div class="trending-content">
+                            <div class="trending-user">
+                                <img src="Assets/images/profile-4.jpeg" alt="User">
+                                <div>
+                                    <h4>Emma Davis</h4>
+                                    <small>6 hours ago</small>
+                                </div>
+                            </div>
+                            <p>Exploring the streets of Tokyo! 🗾 #travel #japan</p>
+                            <div class="trending-stats">
+                                <span><i class="far fa-heart"></i> 3.2K</span>
+                                <span><i class="far fa-comment"></i> 245</span>
+                                <span><i class="far fa-share-square"></i> 167</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <div class="trending-image">
+                            <img src="Assets/images/feed-6.jpg" alt="Trending Post">
+                            <div class="trending-overlay">
+                                <span class="trending-tag">#Music</span>
+                            </div>
+                        </div>
+                        <div class="trending-content">
+                            <div class="trending-user">
+                                <img src="Assets/images/profile-5.jpeg" alt="User">
+                                <div>
+                                    <h4>Alex Turner</h4>
+                                    <small>8 hours ago</small>
+                                </div>
+                            </div>
+                            <p>New track dropping next week! 🎵 #music #newrelease</p>
+                            <div class="trending-stats">
+                                <span><i class="far fa-heart"></i> 4.1K</span>
+                                <span><i class="far fa-comment"></i> 312</span>
+                                <span><i class="far fa-share-square"></i> 189</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggested Users Section -->
+            <div class="suggested-section">
+                <h2>Suggested Users</h2>
+                <div class="suggested-grid">
+                    <div class="suggested-card">
+                        <div class="suggested-user">
+                            <img src="Assets/images/profile-3.jpeg" alt="User">
+                            <div>
+                                <h4>Mike Wilson</h4>
+                                <small>Photographer</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                    <div class="suggested-card">
+                        <div class="suggested-user">
+                            <img src="Assets/images/profile-4.jpeg" alt="User">
+                            <div>
+                                <h4>Emma Davis</h4>
+                                <small>Travel Blogger</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                    <div class="suggested-card">
+                        <div class="suggested-user">
+                            <img src="Assets/images/profile-5.jpeg" alt="User">
+                            <div>
+                                <h4>Alex Turner</h4>
+                                <small>Musician</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                    <div class="suggested-card">
+                        <div class="suggested-user">
+                            <img src="Assets/images/profile-6.jpeg" alt="User">
+                            <div>
+                                <h4>Sophie Chen</h4>
+                                <small>Food Blogger</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                    <div class="suggested-card">
+                        <div class="suggested-user">
+                            <img src="Assets/images/profile-7.jpeg" alt="User">
+                            <div>
+                                <h4>James Wilson</h4>
+                                <small>Tech Enthusiast</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                    <div class="suggested-card">
+                        <div class="suggested-user">
+                            <img src="Assets/images/profile-8.jpeg" alt="User">
+                            <div>
+                                <h4>Lisa Anderson</h4>
+                                <small>Fitness Coach</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending Hashtags Section -->
+            <div class="hashtags-section">
+                <h2>Trending Hashtags</h2>
+                <div class="hashtags-grid">
+                    <div class="hashtag-card">
+                        <h3>#Photography</h3>
+                        <p>1.2M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Travel</h3>
+                        <p>2.1M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Food</h3>
+                        <p>1.8M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Music</h3>
+                        <p>1.5M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Technology</h3>
+                        <p>1.3M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Fitness</h3>
+                        <p>950K posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Art</h3>
+                        <p>1.1M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                    <div class="hashtag-card">
+                        <h3>#Gaming</h3>
+                        <p>2.3M posts</p>
+                        <div class="hashtag-trend">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trending</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ================RIGHT=============== -->
+        <div class="right">
+            <!-- Top Users Section -->
+            <div class="top-users">
+                <h2>Top Users</h2>
+                <div class="user-list">
+                    <div class="user-item">
+                        <div class="user-info">
+                            <img src="Assets/images/profile-4.jpeg" alt="User">
+                            <div>
+                                <h4>Emma Davis</h4>
+                                <small>Photographer</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Follow</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending Topics Section -->
+            <div class="trending-topics">
+                <h2>Trending Topics</h2>
+                <div class="topic-list">
+                    <div class="topic-item">
+                        <div class="topic-info">
+                            <h4>#NaturePhotography</h4>
+                            <p>2.1M posts</p>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="activity-info">
+                            <p><strong>John Smith</strong> liked your post</p>
+                            <small>5 minutes ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Assets/js/script.js"></script>
+    <script src="Assets/js/explore.js"></script>
+</body>
+</html> 
