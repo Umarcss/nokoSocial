@@ -110,7 +110,7 @@
                         </div>
                     </a>
                     <a  class="menu-item" id="messages-notifications" >
-                    <span><i class="uil uil-envelope"> <small class="notification-count">6</small></i></span><h3>Massages</h3>
+                    <span><i class="uil uil-envelope"> <small class="notification-count">6</small></i></span><h3>Messages</h3>
                         
                     </a>
                     <a href="bookmarks.html" class="menu-item">
@@ -704,9 +704,60 @@
         </div>
     </div>
     
+    <!-- Chat Modal -->
+    <div class="chat-modal">
+        <div class="chat-container">
+            <!-- Left Side - Message List -->
+            <div class="chat-sidebar">
+                <div class="chat-sidebar-header">
+                    <h4>Messages</h4>
+                    <div class="search-bar">
+                        <i class="uil uil-search"></i>
+                        <input type="search" placeholder="Search messages" id="chat-search">
+                    </div>
+                </div>
+                <div class="chat-list">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+            </div>
+            
+            <!-- Right Side - Chat Space -->
+            <div class="chat-main">
+                <div class="chat-header">
+                    <div class="user-info">
+                        <div class="profile-photo">
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/024/983/914/small_2x/simple-user-default-icon-free-png.png" alt="User Profile" id="chat-user-photo">
+                        </div>
+                        <div class="user-details">
+                            <h4 id="chat-user-name"></h4>
+                            <small class="text-muted" id="chat-user-status">Online</small>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="btn-icon"><i class="uil uil-phone"></i></button>
+                        <button class="btn-icon"><i class="uil uil-video"></i></button>
+                        <button class="btn-icon" id="close-chat"><i class="uil uil-times"></i></button>
+                    </div>
+                </div>
+                <div class="chat-messages">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+                <div class="chat-input">
+                    <div class="input-actions">
+                        <button class="btn-icon"><i class="uil uil-smile"></i></button>
+                        <button class="btn-icon"><i class="uil uil-image-plus"></i></button>
+                    </div>
+                    <input type="text" placeholder="Type a message..." id="message-input">
+                    <button class="btn-icon send-btn"><i class="uil uil-message"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- <script src="assets/js/bootstrap/bootstrap.js"></script> -->
     <script src="Assets/js/index.js"></script>
     <script src="Assets/js/bookmarks.js"></script>
     <script src="Assets/js/create-post.js"></script>
+    <script src="Assets/js/chat.js"></script>
 </body>
 </html>
