@@ -5,22 +5,34 @@ nokoSocial is a responsive social media platform built with HTML, CSS, and JavaS
 ## 📸 Screenshots
 
 ### Main Interface
-![Main Interface](screenshots/main-interface.png)
+![Main Interface]
+
+![main interface](https://github.com/user-attachments/assets/c6256934-a0e0-49b4-9256-5c9dc5167955)
+
+
 *The main dashboard showing the feed, stories, and navigation*
 
-![3](https://github.com/user-attachments/assets/83a3bc02-53bc-428b-8b6c-6a76f8cfe45d)
 
 
 ### Chat System
-![Chat Interface](screenshots/chat-interface.png)
+![Chat Interface]
+
+![chat interface](https://github.com/user-attachments/assets/bf119571-405d-48df-8da3-51590b5bc266)
+
 *Real-time chat interface with message history*
 
 ### Friend Requests
-![Friend Requests](screenshots/friend-requests.png)
+
+![friend request](https://github.com/user-attachments/assets/c1e1332c-91b7-4c32-a8a4-939a5cc5e16e)
+
+
 *Friend request management interface*
 
 ### Theme Customization
-![Theme Settings](screenshots/theme-settings.png)
+
+![Theme Customization](https://github.com/user-attachments/assets/408ea860-4953-4f03-8732-cd2f9c4084a2)
+
+
 *Theme customization panel*
 
 ## 🔄 How It Works
